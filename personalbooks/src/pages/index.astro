@@ -1,0 +1,52 @@
+---
+import { loadAllJson } from '../lib/loadBooks.js';
+import { mergeBooksFuzzy } from '../lib/mergeBooksFuzzy.js';
+
+const folder = import.meta.env.READING_DATA_PATH;
+console.log(folder);
+const combinedData = loadAllJson(folder!);
+
+const mergedBooks = mergeBooksFuzzy(combinedData, 0.95, 0.85);
+
+const validBooks = mergedBooks
+  .filter(item => item && item.title)
+  .sort((a, b) => (a.originalTitles?.[0] ?? '').localeCompare(b.originalTitles?.[0]));
+// Collect all unique keys
+const allKeys = Array.from(new Set(
+  mergedBooks.flatMap(book => Object.keys(book))
+));
+---
+
+<html>
+  <head>
+    <title>Books Table</title>
+    <style>
+      table { border-collapse: collapse; width: 100%; }
+      th, td { border: 1px solid #ccc; padding: 6px 8px; text-align: left; }
+      th { background: #f0f0f0; }
+    </style>
+  </head>
+  <body>
+    <h1>Books Table</h1>
+    <table>
+      <thead>
+        <tr>
+          {allKeys.map(key => <th>{key}</th>)}
+        </tr>
+      </thead>
+      <tbody>
+        {mergedBooks.map(book => (
+          <tr>
+            {allKeys.map(key => (
+              <td>
+                {Array.isArray(book[key])
+                  ? book[key].join(', ')
+                  : book[key] ?? ''}
+              </td>
+            ))}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </body>
+</html>
