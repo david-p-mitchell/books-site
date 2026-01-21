@@ -1,20 +1,12 @@
 ---
-import { loadAllJson } from '../lib/loadBooks.js';
-import { mergeBooksFuzzy } from '../lib/mergeBooksFuzzy.js';
+import { loadAllJson } from '../lib/loadBooks.js'
+import { mergeBooksFuzzy } from '../lib/mergeBooksFuzzy.js'
+import BookTable from '../components/BookTable.vue'
 
-const folder = import.meta.env.READING_DATA_PATH;
-console.log(folder);
-const combinedData = loadAllJson(folder!);
+const folder = import.meta.env.READING_DATA_PATH
+const combinedData = loadAllJson(folder!)
 
-const mergedBooks = mergeBooksFuzzy(combinedData, 0.95, 0.85);
-
-const validBooks = mergedBooks
-  .filter(item => item && item.title)
-  .sort((a, b) => (a.originalTitles?.[0] ?? '').localeCompare(b.originalTitles?.[0]));
-// Collect all unique keys
-const allKeys = Array.from(new Set(
-  mergedBooks.flatMap(book => Object.keys(book))
-));
+const mergedBooks = mergeBooksFuzzy(combinedData, 0.95, 0.85)
 ---
 
 <html>
@@ -28,25 +20,6 @@ const allKeys = Array.from(new Set(
   </head>
   <body>
     <h1>Books Table</h1>
-    <table>
-      <thead>
-        <tr>
-          {allKeys.map(key => <th>{key}</th>)}
-        </tr>
-      </thead>
-      <tbody>
-        {mergedBooks.map(book => (
-          <tr>
-            {allKeys.map(key => (
-              <td>
-                {Array.isArray(book[key])
-                  ? book[key].join(', ')
-                  : book[key] ?? ''}
-              </td>
-            ))}
-          </tr>
-        ))}
-      </tbody>
-    </table>
+    <BookTable books={mergedBooks} client:load />
   </body>
 </html>
