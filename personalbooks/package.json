@@ -9,8 +9,10 @@
     "astro": "astro"
   },
   "dependencies": {
+    "@astrojs/vue": "^5.1.4",
     "astro": "^5.16.11",
-    "string-similarity": "^4.0.4"
+    "string-similarity": "^4.0.4",
+    "vue": "^3.5.27"
   },
   "devDependencies": {
     "@types/node": "^25.0.9"
