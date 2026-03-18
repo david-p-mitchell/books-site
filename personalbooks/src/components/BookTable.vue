@@ -213,11 +213,11 @@ export default {
         resourceType: { value: null, matchMode: 'contains' },
         myTags: { value: null, matchMode: 'contains' },
         communityTags: { value: null, matchMode: 'contains' },
-        read: { value: null, matchMode: 'equals' }
+        read: { value: false, matchMode: 'equals' }
       },
       statuses: [
         { label: 'Yes', value: true },
-        { label: 'No', value: false || null }
+        { label: 'No', value: false }
       ],
       hoveredImage: null,
       hoverX: 0,
@@ -236,13 +236,12 @@ export default {
       return false
     },
     readFilter(value, filterValue) {
-      if (filterValue === null || filterValue === undefined) return true
-      if (typeof filterValue === 'string') {
-        const val = filterValue.toLowerCase()
-        if (val === 'yes') return value === true
-        if (val === 'no') return value === null || value === false
-      }
-      return value === filterValue
+      if (filterValue === null || filterValue === undefined) return true; // no filter
+
+      if (filterValue === true) return value === true;
+      if (filterValue === false) return value === false || value === null;
+
+      return false;
     },
     onThumbMove(event, url) {
       if (!url) return
@@ -262,7 +261,8 @@ export default {
         author: Array.isArray(b.author) ? b.author.join('; ') : b.author ?? '',
         myTags: Array.isArray(b.myTags) ? b.myTags.join(', ') : b.myTags ?? '',
         communityTags: Array.isArray(b.communityTags) ? b.communityTags.join(', ') : b.communityTags ?? '',
-        dates: Array.isArray(b.dates) ? b.dates.join(', ') : b.dates ?? ''
+        dates: Array.isArray(b.dates) ? b.dates.join(', ') : b.dates ?? '',
+        read: b.read === true ? true : b.read === false?? false 
       }))
     },
     orderedBooks() {
