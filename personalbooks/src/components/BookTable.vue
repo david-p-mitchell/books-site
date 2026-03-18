@@ -11,6 +11,7 @@
 
     <DataTable
       :value="processedBooks"
+      sortMode="multiple"
       v-model:filters="filters"
       filterDisplay="row"
       :globalFilterFields="['title','author','publisher','myTags','communityTags']"
@@ -19,7 +20,9 @@
       v-model:first="firstRow"
       :paginatorTemplate="'FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink RowsPerPageDropdown'"
       :currentPageReportTemplate="pageReport"
+      sortable
       removableSort
+      :multiSortMeta="multiSortMeta"
       stripedRows
       responsiveLayout="scroll"
       resizableColumns
@@ -224,6 +227,9 @@ export default {
       hoverY: 0,
       firstRow: 0,
       rows: 20,
+      multiSortMeta: [
+        { field: 'pageCount', order: 1 }
+      ]
     }
   },
 
@@ -262,7 +268,7 @@ export default {
         myTags: Array.isArray(b.myTags) ? b.myTags.join(', ') : b.myTags ?? '',
         communityTags: Array.isArray(b.communityTags) ? b.communityTags.join(', ') : b.communityTags ?? '',
         dates: Array.isArray(b.dates) ? b.dates.join(', ') : b.dates ?? '',
-        read: b.read === true ? true : b.read === false?? false 
+        read: b.read === true ? true : false 
       }))
     },
     orderedBooks() {
