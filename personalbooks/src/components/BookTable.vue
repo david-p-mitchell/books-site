@@ -15,8 +15,11 @@
       filterDisplay="row"
       :globalFilterFields="['title','author','publisher','myTags','communityTags']"
       paginator
-      removableSort
       :rows="20"
+      v-model:first="firstRow"
+      :paginatorTemplate="'FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink RowsPerPageDropdown'"
+      :currentPageReportTemplate="pageReport"
+      removableSort
       stripedRows
       responsiveLayout="scroll"
       resizableColumns
@@ -24,7 +27,6 @@
       size="small"
       rowHover
     >
-    
       <!-- Title Column -->
       <Column field="title" header="Title" sortable filter>
         <template #body="{ data }">
@@ -176,6 +178,7 @@
 
       <!-- Series Column -->
       <Column field="Series" header="Series" />
+      
     </DataTable>
       
   </div>
@@ -217,6 +220,8 @@ export default {
       hoveredImage: null,
       hoverX: 0,
       hoverY: 0,
+      firstRow: 0,
+      rows: 20,
     }
   },
 
@@ -264,7 +269,17 @@ export default {
         const bPages = Number(b.pageCount) || 0
         return bPages - aPages
       })
+    },
+    pageReport() {
+      const first = this.firstRow + 1
+      const last = Math.min(this.firstRow + this.rows, this.processedBooks.length)
+      const total = this.processedBooks.length
+      const readCount = this.processedBooks
+        .filter(b => b.read === true).length
+
+      return `Showing ${first} to ${last} of ${total} books (${readCount} read)`
     }
+
   }
 }
 </script>
