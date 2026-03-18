@@ -16,7 +16,7 @@
       filterDisplay="row"
       :globalFilterFields="['title','author','publisher','myTags','communityTags']"
       paginator
-      :rows="20"
+      :rows="15"
       v-model:first="firstRow"
       :paginatorTemplate="'FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink RowsPerPageDropdown'"
       :currentPageReportTemplate="pageReport"
@@ -68,7 +68,7 @@
         dataType="numeric"
       >
         <template #body="{ data }">
-          {{ data.pageCount ?? 'N/A' }}
+          {{ data.pageCount ?? 'N/A' }} 
         </template>
         <template #filter="{ filterModel, filterCallback }">
           <InputText
@@ -229,7 +229,16 @@ export default {
       rows: 20,
       multiSortMeta: [
         { field: 'pageCount', order: 1 }
-      ]
+      ],
+      processedBooks: this.books.map(b => ({
+        ...b,
+        author: Array.isArray(b.author) ? b.author.join('; ') : b.author ?? '',
+        myTags: Array.isArray(b.myTags) ? b.myTags.join(', ') : b.myTags ?? '',
+        communityTags: Array.isArray(b.communityTags) ? b.communityTags.join(', ') : b.communityTags ?? '',
+        dates: Array.isArray(b.dates) ? b.dates.join(', ') : b.dates ?? '',
+        read: b.read === true ? true : false,
+        pageCount: b.pageCount != null ? Number(b.pageCount) : 100000
+      }))
     }
   },
 
@@ -261,23 +270,6 @@ export default {
   },
 
   computed: {
-    processedBooks() {
-      return this.books.map(b => ({
-        ...b,
-        author: Array.isArray(b.author) ? b.author.join('; ') : b.author ?? '',
-        myTags: Array.isArray(b.myTags) ? b.myTags.join(', ') : b.myTags ?? '',
-        communityTags: Array.isArray(b.communityTags) ? b.communityTags.join(', ') : b.communityTags ?? '',
-        dates: Array.isArray(b.dates) ? b.dates.join(', ') : b.dates ?? '',
-        read: b.read === true ? true : false 
-      }))
-    },
-    orderedBooks() {
-      return [...this.processedBooks].sort((a, b) => {
-        const aPages = Number(a.pageCount) || 0
-        const bPages = Number(b.pageCount) || 0
-        return bPages - aPages
-      })
-    },
     pageReport() {
       const first = this.firstRow + 1
       const last = Math.min(this.firstRow + this.rows, this.processedBooks.length)
@@ -288,7 +280,25 @@ export default {
       return `Showing ${first} to ${last} of ${total} books (${readCount} read)`
     }
 
+  },
+  watch: {
+    books: {
+      handler(newBooks) {
+        this.processedBooks = newBooks.map(b => ({
+          ...b,
+        author: Array.isArray(b.author) ? b.author.join('; ') : b.author ?? '',
+        myTags: Array.isArray(b.myTags) ? b.myTags.join(', ') : b.myTags ?? '',
+        communityTags: Array.isArray(b.communityTags) ? b.communityTags.join(', ') : b.communityTags ?? '',
+        dates: Array.isArray(b.dates) ? b.dates.join(', ') : b.dates ?? '',
+        read: b.read === true ? true : false,
+        pageCount: b.pageCount != null ? Number(b.pageCount) : 100000
+        }))
+      },
+      deep: true,
+      immediate: true
+    }
   }
+
 }
 </script>
 
