@@ -11,5 +11,4 @@ const mergedBooks = mergeBooksFuzzy(combinedData, 0.95, 0.85);
 <Layout>
   <!-- <h1>Books Table</h1> -->
   <BookTable books={mergedBooks} client:load />
-  <p>{mergedBooks.filter(b => b.read).length} read</p>
 </Layout>

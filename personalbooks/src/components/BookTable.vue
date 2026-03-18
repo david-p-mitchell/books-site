@@ -89,7 +89,14 @@
         </template>
       </Column>
 
-      <Column field="read" header="Read" filter :filterFunction="readFilter">
+      <Column
+        field="read"
+        header="Read"
+        filter
+        :filterFunction="readFilter"
+        class="p-column-read"
+        :showFilterMenu="false"
+      >
         <template #body="{ data }">{{ data.read ? 'Yes' : 'No' }}</template>
         <template #filter="{ filterModel, filterCallback }">
           <Select
@@ -98,14 +105,9 @@
             :options="statuses"
             optionLabel="label"
             optionValue="value"
-            placeholder="Select One"
-            style="padding:0;"
+            style="padding:0; max-width: 7rem;"
             :showClear="true"
-          >
-            <template #option="slotProps">
-              {{ slotProps.option.label }}
-            </template>
-          </Select>
+          />
         </template>
       </Column>
 
@@ -316,5 +318,9 @@ td {
   pointer-events: none;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
   border-radius: 4px;
+}
+
+.p-column-filter-row .p-column-filter.p-column-read .p-column-filter-icon {
+  display: none !important;
 }
 </style>
