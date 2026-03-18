@@ -7,6 +7,9 @@ const folder = import.meta.env.READING_DATA_PATH
 const combinedData = loadAllJson(folder!)
 
 const mergedBooks = mergeBooksFuzzy(combinedData, 0.95, 0.85)
+console.log(
+  mergedBooks.filter(book => book.title.includes("Place of Healing"))
+);
 ---
 
 <html>
@@ -19,7 +22,9 @@ const mergedBooks = mergeBooksFuzzy(combinedData, 0.95, 0.85)
     </style>
   </head>
   <body>
-    <h1>Books Table</h1>
+    <!-- <h1>Books Table</h1> -->
     <BookTable books={mergedBooks} client:load />
+    <p>{mergedBooks.length} books</p>
+    <p>{mergedBooks.filter(b => b.read).length} read</p>
   </body>
 </html>

@@ -1,9 +1,11 @@
 import stringSimilarity from 'string-similarity';
+
 /**
  * Merge books using smart heuristics:
  * - Prefix-based title match + author overlap
  * - Fuzzy title + author match fallback
  * - Collates all extra properties, including sources
+ * - 🚫 Does NOT merge books from the same source
  */
 export function mergeBooksFuzzy(books, titleThreshold = 0.95, authorThreshold = 0.85) {
   const merged = [];
@@ -13,10 +15,15 @@ export function mergeBooksFuzzy(books, titleThreshold = 0.95, authorThreshold = 
 
     const normalizedBookTitle = normalizeTitle(book.title);
     const bookAuthors = book.author || [];
-    const bookSources = book.__source ? [book.__source] : [];
+    const bookSource = book.__source;
+    const bookSources = bookSource ? [bookSource] : [];
 
     const match = merged.find(b => {
       const existingAuthors = b.author || [];
+      const existingSources = b.__sources || [];
+
+      // 🚫 Skip if same source
+      if (bookSource && existingSources.includes(bookSource)) return false;
 
       // 1️⃣ Prefix-based title + author overlap
       if (isTitlePrefixMatch(b.title, book.title) && authorOverlap(existingAuthors, bookAuthors)) {
@@ -36,8 +43,7 @@ export function mergeBooksFuzzy(books, titleThreshold = 0.95, authorThreshold = 
 
     if (match) {
       // Merge authors
-      const matchAuthors = match.author || [];
-      match.author = Array.from(new Set([...matchAuthors, ...bookAuthors]));
+      match.author = Array.from(new Set([...(match.author || []), ...bookAuthors]));
 
       // Merge dates
       match.dates = Array.from(new Set([...(match.dates || []), book.date].filter(Boolean)));
@@ -45,7 +51,7 @@ export function mergeBooksFuzzy(books, titleThreshold = 0.95, authorThreshold = 
       // Merge sources
       match.__sources = Array.from(new Set([...(match.__sources || []), ...bookSources]));
 
-      // Merge all other properties
+      // Merge other properties
       for (const key of Object.keys(book)) {
         if (['title', 'author', 'dates', 'originalTitles', '__source'].includes(key)) continue;
 
@@ -55,8 +61,9 @@ export function mergeBooksFuzzy(books, titleThreshold = 0.95, authorThreshold = 
         if (existing === undefined) {
           match[key] = value;
         } else if (Array.isArray(existing)) {
-          if (Array.isArray(value)) match[key] = Array.from(new Set([...existing, ...value]));
-          else match[key] = Array.from(new Set([...existing, value]));
+          match[key] = Array.isArray(value)
+            ? Array.from(new Set([...existing, ...value]))
+            : Array.from(new Set([...existing, value]));
         } else if (existing !== value) {
           match[key] = Array.from(new Set([existing, value]));
         }
@@ -78,10 +85,10 @@ function normalizeTitle(title) {
   if (!title) return '';
   return title
     .toLowerCase()
-    .replace(/\(\s*crucial questions series book \d+\s*\)/i, '') 
-    .replace(/\(\s*crucial questions\s*\)/i, '')                  
-    .replace(/\(\s*christ-centered exposition commentary\s*\)/i, '') 
-    .replace(/[^a-z0-9]/g, '')                                    
+    .replace(/\(\s*crucial questions series book \d+\s*\)/i, '')
+    .replace(/\(\s*crucial questions\s*\)/i, '')
+    .replace(/\(\s*christ-centered exposition commentary\s*\)/i, '')
+    .replace(/[^a-z0-9]/g, '')
     .trim();
 }
 
