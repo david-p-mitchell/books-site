@@ -1,30 +1,16 @@
 ---
-import { loadAllJson } from '../lib/loadBooks.js'
-import { mergeBooksFuzzy } from '../lib/mergeBooksFuzzy.js'
-import BookTable from '../components/BookTable.vue'
+import Layout from '../layouts/Layout.astro';
+import BookTable from '../components/BookTable.vue';
+import { loadAllJson } from '../lib/loadBooks.js';
+import { mergeBooksFuzzy } from '../lib/mergeBooksFuzzy.js';
 
-const folder = import.meta.env.READING_DATA_PATH
-const combinedData = loadAllJson(folder!)
-
-const mergedBooks = mergeBooksFuzzy(combinedData, 0.95, 0.85)
-console.log(
-  mergedBooks.filter(book => book.title.includes("Place of Healing"))
-);
+const folder = import.meta.env.READING_DATA_PATH;
+const combinedData = loadAllJson(folder!);
+const mergedBooks = mergeBooksFuzzy(combinedData, 0.95, 0.85);
 ---
-
-<html>
-  <head>
-    <title>Books Table</title>
-    <style>
-      table { border-collapse: collapse; width: 100%; }
-      th, td { border: 1px solid #ccc; padding: 6px 8px; text-align: left; }
-      th { background: #f0f0f0; }
-    </style>
-  </head>
-  <body>
-    <!-- <h1>Books Table</h1> -->
-    <BookTable books={mergedBooks} client:load />
-    <p>{mergedBooks.length} books</p>
-    <p>{mergedBooks.filter(b => b.read).length} read</p>
-  </body>
-</html>
+<Layout>
+  <h1>Books Table</h1>
+  <BookTable books={mergedBooks} client:load />
+  <p>{mergedBooks.length} books</p>
+  <p>{mergedBooks.filter(b => b.read).length} read</p>
+</Layout>

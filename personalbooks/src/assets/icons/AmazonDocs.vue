@@ -10,7 +10,6 @@
 
     <!-- label -->
     <text x="15" y="26"
-            font-family="Arial, Helvetica, sans-serif"
             font-size="6"
             text-anchor="middle"
             fill="#FF9900"

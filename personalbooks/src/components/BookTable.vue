@@ -26,7 +26,7 @@
     >
     
       <!-- Title Column -->
-      <Column field="title" header="Title" sortable filter style="min-width: 30rem">
+      <Column field="title" header="Title" sortable filter>
         <template #body="{ data }">
           <div
             class="img-wrapper"

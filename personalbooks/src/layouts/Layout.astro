@@ -1,16 +1,23 @@
 ---
-// PrimeVue core styles
-import 'primevue/resources/primevue.min.css'
-
-// Aura theme
-import 'primevue/resources/themes/aura-light/theme.css'
-
-// PrimeIcons (for icons like pi-check)
-import 'primeicons/primeicons.css'
----
-
+---  
 <head>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- PrimeVue CSS via CDN -->
+  <link rel="stylesheet" href="https://unpkg.com/primevue/resources/primevue.min.css" />
+  <link rel="stylesheet" href="https://unpkg.com/primevue/resources/themes/aura-light/theme.css" />
+  <link rel="stylesheet" href="https://unpkg.com/primeicons/primeicons.css" />
 </head>
+
+<style>
+  html, body {
+    font-family: 'Inter', sans-serif;
+  }
+  .p-component {
+    font-family: 'Inter', sans-serif !important;
+  }
+</style>
+
+<slot />
