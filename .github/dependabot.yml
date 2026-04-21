@@ -1,0 +1,12 @@
+version: 2
+updates:
+  # npm dependencies
+  - package-ecosystem: "npm"
+    directory: "/" # Location of package.json
+    schedule:
+      interval: "weekly" # Can also be "weekly" or "monthly"
+    open-pull-requests-limit: 10
+    assignees:
+      -"david-p-mitchell"
+    reviewers:
+      -"david-p-mitchell"
