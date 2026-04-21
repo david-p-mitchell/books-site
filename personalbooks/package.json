@@ -12,7 +12,7 @@
     "@astrojs/vue": "^5.1.4",
     "@primeuix/themes": "^2.0.3",
     "@primevue/core": "^4.5.4",
-    "astro": "^5.16.11",
+    "astro": "^5.18.1",
     "primeicons": "^7.0.0",
     "primevue": "^4.5.4",
     "string-similarity": "^4.0.4",
