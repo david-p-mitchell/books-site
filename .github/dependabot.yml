@@ -7,6 +7,6 @@ updates:
       interval: "weekly" # Can also be "weekly" or "monthly"
     open-pull-requests-limit: 10
     assignees:
-      -"david-p-mitchell"
+      - "david-p-mitchell"
     reviewers:
-      -"david-p-mitchell"
+      - "david-p-mitchell"
